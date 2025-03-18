@@ -1,0 +1,12 @@
+# Ignorer les fichiers de log
+*.log
+
+# Ignorer le dossier de compilation
+/build/
+/mon_env/
+
+# Ignorer les fichiers temporaires
+*.tmp
+
+# Ignorer un fichier spécifique
+secret.txt
