@@ -1,0 +1,15 @@
+Metric,Value,Dataset
+Mean Squared Error,0.11604408174753189,Train
+AUC-ROC,0.9708380067296908,Train
+Accuracy,0.9367088607594937,Train
+True Positives,74.0,Train
+False Positives,5.0,Train
+False Negatives,5.0,Train
+True Negatives,74.0,Train
+Mean Squared Error,0.15757006406784058,Test
+AUC-ROC,0.9095238095238096,Test
+Accuracy,0.8169014084507042,Test
+True Positives,29.0,Test
+False Positives,7.0,Test
+False Negatives,6.0,Test
+True Negatives,29.0,Test
