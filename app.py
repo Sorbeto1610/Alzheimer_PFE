@@ -194,11 +194,17 @@ transcriptions et ainsi s’assurer d’éviter la perte d’information. La seg
 segmentation n’était pas nécéssaire pour les embeddings de BERT.
 """)
 with st.expander("**Transcription Encadrant**", expanded=False):
-    st.image("./plot/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
-    st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image("./plot/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
+    with col2:
+        st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
 with st.expander("**Transcription Silences**", expanded=False):
-    st.image("./plot/bert_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions incluant les silences [Early Stopping : epoch 7]", use_container_width=True)
-    st.image("./plot/1st_embedding_SBERT_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions incluant les silences (1st) [Early stopping : epoch 476]", use_container_width=True)
+    col1, col2 = st.columns(2)
+    with col1:
+        st.image("./plot/bert_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions incluant les silences [Early Stopping : epoch 7]", use_container_width=True)
+    with col2:
+        st.image("./plot/1st_embedding_SBERT_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions incluant les silences (1st) [Early stopping : epoch 476]", use_container_width=True)
 st.markdown("""
 En comparant ces quatres modèles on peut constater que l’apprentissage
 semble légèrement mieux se passer avec les transcriptions de notre encadrant.
@@ -232,16 +238,18 @@ st.dataframe(filtered_df)
 st.markdown("""
 #### CHOIX BERT ET SBERT
 SBERT est une adaptation de BERT spécifiquement conçue pour générer
-des représentations de phrases au lieu de mots. Cela permet d’obtenir des représen-
-tations mieux adaptées à la détection de similarité sémantique. En théorie, SBERT
+des représentations de phrases au lieu de mots. Cela permet d’obtenir des représentations mieux adaptées à la détection de similarité sémantique. En théorie, SBERT
 est donc plus approprié pour le clustering de textes. Pour le confirmer nous allons
 comparer les performances de plusieurs modèles :
 """)
 with st.expander("**BERT**", expanded=False):
     st.image("./plot/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
 with st.expander("**SBERT (1st & 2nd)**", expanded=False):
-        st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
-        st.image("./plot/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping : epoch 2024]", use_container_width=True)
+        col1, col2 = st.columns(2)
+        with col1:
+            st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
+        with col2:
+            st.image("./plot/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping : epoch 2024]", use_container_width=True)
 st.markdown("""
 A travers les performances de ces trois modèles, on remarque une tendance
 à l’overfitting chez BERT, et les indicateurs de performance sont globalement
