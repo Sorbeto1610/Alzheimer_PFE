@@ -1,9 +1,11 @@
 # Ignorer les fichiers de log
 *.log
+*.zip
 
 # Ignorer le dossier de compilation
 /build/
 /mon_env/
+/Alzheimer_PFE/
 
 # Ignorer les fichiers temporaires
 *.tmp
