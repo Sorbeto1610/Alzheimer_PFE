@@ -65,16 +65,10 @@ col1, col2, col3, col4, col5 = st.columns(5)
 # Colonne 1 : Votre photo et présentation
 with col2:
     st.image("./Gabriel_pp.jpg", caption="Gabriel CHABREDIER", use_container_width=True)
-    st.markdown("""    
-    Je suis [votre rôle ou spécialité]. J'ai travaillé sur ce projet en me concentrant sur [vos contributions spécifiques].
-    """)
 
 # Colonne 2 : Photo de votre collègue et présentation
 with col4:
     st.image("./Valentine_pp.jpeg", caption="Valentine GOBERT", use_container_width=True)
-    st.markdown("""
-    Je suis [rôle ou spécialité de votre collègue]. J'ai contribué à ce projet en [contributions de votre collègue].
-    """)
 
 st.markdown("""
 ### AMBITION INITIALE
