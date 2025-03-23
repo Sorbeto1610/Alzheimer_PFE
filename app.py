@@ -4,6 +4,8 @@ import matplotlib.pyplot as plt
 import numpy as np
 import joblib
 import nltk
+import torch
+from torch import nn
 from nltk.tokenize import sent_tokenize
 from sentence_transformers import SentenceTransformer
 
@@ -421,7 +423,7 @@ st.markdown("**Performances des modèles de régression linéaire**")
 st.dataframe(filtered_df)
 
 # Charger les données depuis le fichier CSV
-df_metrics = pd.read_csv("./combined_metamodel_metrics.csv")
+df_metrics = pd.read_csv("./linear_regression_metamodel_metrics.csv")
 
 # Séparer les données pour Train et Test
 train_data = df_metrics[df_metrics['Dataset'] == 'Train'].drop('Dataset', axis=1)
@@ -449,10 +451,6 @@ df_test = pd.read_excel("stacking_test.xlsx")
 
 # Créer une select box pour choisir un patient
 patient_id = st.selectbox("Choisissez un patient", options=df_test['id'].unique())
-
-# Afficher le patient choisi
-st.write(f"Patient sélectionné : {patient_id}")
-st.divider()
 with st.expander("**Audio et Transcription**", expanded=False): 
     # Créer les colonnes
     col1, col2, col3 = st.columns(3)
@@ -471,6 +469,7 @@ with st.expander("**Audio et Transcription**", expanded=False):
     with col3:
             st.markdown("**Notre Transcription**")
             st.markdown(transcription_text[0])  # Affiche le premier résultat trouvé
+
 #######################
 def segment_text(text):
     # Tokenise le texte en phrases
@@ -497,33 +496,140 @@ def segment_text(text):
     return chunks
 
 to_drop = ['id','Transcription','Silences','Alzheimer', 'transcript', 'addressfname']
-X1 =df_test.loc[df_test['id'] == patient_id].drop(to_drop,axis=1)
+x1 =df_test.loc[df_test['id'] == patient_id].drop(to_drop,axis=1)
 y= df_test.loc[df_test['id'] == patient_id]['Alzheimer']
 scaler_loaded = joblib.load('stacked_scaler.pkl')
-X1 = scaler_loaded.transform(X1)
-transcript =df_test.loc[df_test['id'] == patient_id]['transcript']
+X1 = scaler_loaded.transform(x1)
+transcript =df_test.loc[df_test['id'] == patient_id]['transcript'].values[0]
 chunks = segment_text(transcript)
 chunk_embeddings = []  # Pour stocker les embeddings des chunks
-model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+st_model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
 for chunk in chunks:
-    embedding = model.encode(chunk) 
+    embedding = st_model.encode(chunk) 
     chunk_embeddings.append(embedding)
 if chunk_embeddings:  # Vérifier que la liste n'est pas vide
     X2 = np.mean(chunk_embeddings, axis=0)  
 
-#######################
+X1_tensor = torch.tensor(X1, dtype=torch.float32)
+X2_tensor = torch.tensor(X2, dtype=torch.float32)
+class ImprovedRegressionModel1(nn.Module):
+    def __init__(self, input_size):
+        super(ImprovedRegressionModel1, self).__init__()
+        self.fc1 = nn.Linear(input_size, 64)
+        self.dropout1 = nn.Dropout(0.3)
+        self.fc2 = nn.Linear(64, 32)
+        self.dropout2 = nn.Dropout(0.2)
+        self.fc3 = nn.Linear(32, 1)
 
+    def forward(self, x):
+        x = torch.nn.functional.relu(self.fc1(x))
+        x = self.dropout1(x)
+        x = torch.nn.functional.relu(self.fc2(x))
+        x = self.dropout2(x)
+        return self.fc3(x) 
+      
+class ImprovedRegressionModel2(nn.Module):
+    def __init__(self, input_size):
+        super(ImprovedRegressionModel2, self).__init__()
+        self.fc1 = nn.Linear(input_size, 64)  
+        self.dropout1 = nn.Dropout(0.55)
+        self.fc2 = nn.Linear(64, 32)           
+        self.dropout2 = nn.Dropout(0.6)        
+        self.fc3 = nn.Linear(32, 1)         
+
+    def forward(self, x):
+        x = torch.nn.functional.softplus(self.fc1(x)) 
+        x = self.dropout1(x)                            
+        x = torch.nn.functional.softplus(self.fc2(x))  
+        x = self.dropout2(x)                            
+        return self.fc3(x)                              
+
+input_dim1 = 5
+model1 = ImprovedRegressionModel1(input_dim1)
+model1.load_state_dict(torch.load('./Linear_Regression_model_Silences.pth', map_location=torch.device('cpu')))
+model1.eval()
+
+input_dim2 = 384
+model2 = ImprovedRegressionModel2(input_dim2)
+model2.load_state_dict(torch.load('./2nd_embedding_linear_regression_SBERT_encadrant_loss.pth', map_location=torch.device('cpu')))
+model2.eval()
+
+with torch.no_grad():
+     pred1 = model1(X1_tensor)
+     pred2 = model2(X2_tensor)
+
+# Clamp predictions to ensure they are between 0 and 1
+pred1_clamped = torch.clamp(pred1, 0, 1)
+pred2_clamped = torch.clamp(pred2, 0, 1)
+# Convert prediction to a NumPy array and extract the value
+pred1_percentage = pred1_clamped.item() * 100
+pred2_percentage = pred2_clamped.item() * 100
+
+#st.dataframe(y)
+#######################
+with st.expander("**Données de silence**", expanded=False):
+     st.dataframe(x1)
 with st.expander("**Modèles et prédictions**", expanded=False):
      col1, col2 = st.columns(2)
+     with col1:
+        st.subheader("Silence Model")
+        a, b, c = st.columns(3)
+        with b:
+            st.subheader(f"{pred1_percentage:.1f}%")
+        cols = st.columns(10)
+        cols[0].write(0)
+        cols[9].write(1)
+        st.progress(pred1_clamped.item())
+     with col2:
+        st.subheader("Transcription Model")
+        a, b, c = st.columns(3)
+        with b:
+            st.subheader(f"{pred2_percentage:.1f}%")
+        cols = st.columns(10)
+        cols[0].write(0)
+        cols[9].write(1)
+        st.progress(pred2_clamped.item())
+     
+# Load the meta-model
+loaded_meta_model = joblib.load('meta_model.pkl')
 
-      
+meta_feature = np.column_stack((pred1.cpu().numpy(), pred2.cpu().numpy()))
+meta_prediction = loaded_meta_model.predict(meta_feature)
+meta_prediction_tensor = torch.tensor(meta_prediction, dtype=torch.float32)
+meta_prediction_clamped = torch.clamp(meta_prediction_tensor, 0, 1)
+
+# Afficher le résultat
+meta_prediction_percentage = meta_prediction_clamped.item() * 100
+with st.expander("**Metamodel prediction**", expanded=False):
+    st.subheader("Metamodel")
+    a, b, c = st.columns(3)
+    with b:
+        st.title(f"{meta_prediction_percentage:.2f}%")
+    cols = st.columns(10)
+    cols[0].write(0)
+    cols[9].write(1)
+    st.progress(meta_prediction_clamped.item())
 
 
-# Exemple de valeur entre 0 et 1
-value = 0.75  # Remplacez ceci par votre valeur
+model_names = ['Silence Model', 'Transcription Model', 'Metamodel']
+results = [pred1_clamped.item(), pred2_clamped.item(), meta_prediction_clamped.item()]
 
-# Afficher la barre de progression
-st.progress(value)
+emojis = []
+for result in results:
+    predicted_class = 1 if float(result) >= 0.5 else 0
+    emojis.append('👍' if predicted_class == y.item() else '👎')
 
+results_df = pd.DataFrame({
+    'Modèles': model_names,
+    'Résultats': results,
+    'Prédiction Correcte': emojis
+})
+with st.expander("**Diagnostic**", expanded=False):
+    diagnostic = "Patient Alzheimer" if y.item() == 1 else "Patient Contrôle"
+    st.title("Diagnostic : "+str(diagnostic))
+    st.write(results_df)
+"""
 if st.button("Send balloons!"):
     st.balloons()
+Merci BEYONCE
+"""
