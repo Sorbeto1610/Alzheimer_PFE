@@ -35,7 +35,7 @@ st.sidebar.markdown("[CHOIX EMBEDDING](#choix-embedding)")
 st.sidebar.markdown("[CHOIX EARLY STOPPING](#choix-early-stopping)")
 st.sidebar.markdown("[MODELE SEQUENTIEL POUR ANALYSE DES SILENCES](#modèle-sequentiel-danalyse-des-silences)")
 st.sidebar.markdown("[FUSION DES MODELES DE REGRESSION LINEAIRE](#fusion-des-modeles-de-regression-lineaire)")
-
+st.sidebar.markdown("[DEMONSTRATION](#demonstration)")
 st.markdown("""
 ### INTRODUCTION
 La maladie d’Alzheimer est une maladie neurodégénérative entraînant un
@@ -628,8 +628,7 @@ with st.expander("**Diagnostic**", expanded=False):
     diagnostic = "Patient Alzheimer" if y.item() == 1 else "Patient Contrôle"
     st.title("Diagnostic : "+str(diagnostic))
     st.write(results_df)
-"""
-if st.button("Send balloons!"):
-    st.balloons()
-Merci BEYONCE
-"""
+
+#if st.button("Send balloons!"):
+#    st.balloons()
+# Merci BEYONCE
