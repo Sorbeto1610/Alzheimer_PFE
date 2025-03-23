@@ -71,7 +71,7 @@ with col2:
 
 # Colonne 2 : Photo de votre collègue et présentation
 with col4:
-    st.image("./Valentine_pp.jpg", caption="Valentine GOBERT", use_container_width=True)
+    st.image("./Valentine_pp.jpeg", caption="Valentine GOBERT", use_container_width=True)
     st.markdown("""
     Je suis [rôle ou spécialité de votre collègue]. J'ai contribué à ce projet en [contributions de votre collègue].
     """)
