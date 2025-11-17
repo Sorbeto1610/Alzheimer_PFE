@@ -9,6 +9,10 @@ from torch import nn
 from nltk.tokenize import sent_tokenize
 from sentence_transformers import SentenceTransformer
 
+# Suppression de l'avertissement du watcher torch
+import os
+os.environ['STREAMLIT_WATCHER_SUPPRESS_TORCH_WARNING'] = '1'
+
 nltk.download('punkt')
 nltk.download('punkt_tab')
 
