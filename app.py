@@ -68,11 +68,11 @@ col1, col2, col3, col4, col5 = st.columns(5)
 
 # Colonne 1 : Votre photo et présentation
 with col2:
-    st.image("./Gabriel_pp.jpg", caption="Gabriel CHABREDIER", use_container_width=True)
+    st.image("./assets/images/Gabriel_pp.jpg", caption="Gabriel CHABREDIER", use_container_width=True)
 
 # Colonne 2 : Photo de votre collègue et présentation
 with col4:
-    st.image("./Valentine_pp.jpeg", caption="Valentine GOBERT", use_container_width=True)
+    st.image("./assets/images/Valentine_pp.jpeg", caption="Valentine GOBERT", use_container_width=True)
 
 st.markdown("""
 ### AMBITION INITIALE
@@ -125,7 +125,7 @@ lors de cette étape : ”Les temps de pauses et silences”. Par défaut, les m
 """)
 st.divider()
 # Charger le fichier Excel
-df = pd.read_excel("stacking_train.xlsx")
+df = pd.read_excel("./data/stacking_train.xlsx")
 
 # Toggle pour choisir entre CN et AD
 isAD = st.toggle("CN ou AD")
@@ -142,7 +142,7 @@ else:
 
 with col1:
         st.markdown(f"**Audio du sujet {transcription_id}**")
-        st.audio(f"./{transcription_id}.wav")
+        st.audio(f"./assets/audio/{transcription_id}.wav")
 
 transcription_text_encadrant = df.loc[df['id'] == transcription_id, 'transcript'].values
 with col2:
@@ -167,16 +167,16 @@ st.markdown("""
 
 st.divider()
 st.markdown("**Dataframe avec silences**")
-df_train = pd.read_excel("transcriptions_finale.xlsx")
+df_train = pd.read_excel("./data/transcriptions_finale.xlsx")
 st.dataframe(df_train)
-st.image("./Box_plot_silences.png", caption="[Box plots] Temps cumulé de silence par sujet - Nombre de Silence par sujet - Durée moyenne du silence par sujet", use_container_width=True)
+st.image("./assets/images/Box_plot_silences.png", caption="[Box plots] Temps cumulé de silence par sujet - Nombre de Silence par sujet - Durée moyenne du silence par sujet", use_container_width=True)
 col1, col2, col3 = st.columns(3)
 with col1:
-     st.image("./Silences_distribution_gaussian.png", caption="Distribution des Silences en fonction de leur longueur - AD et CN", use_container_width= True)
+     st.image("./assets/images/Silences_distribution_gaussian.png", caption="Distribution des Silences en fonction de leur longueur - AD et CN", use_container_width= True)
 with col2:
-     st.image("./Distribution_silences_tempstotal.png", caption="Distribution et Gaussien du ratio entre le silence cummulé et la longueur de l’audio - AD et CN", use_container_width= True)
+     st.image("./assets/images/Distribution_silences_tempstotal.png", caption="Distribution et Gaussien du ratio entre le silence cummulé et la longueur de l’audio - AD et CN", use_container_width= True)
 with col3:
-     st.image("./Distribution_tempscumulé_silences.png", caption="Distribution et Gaussien du temps cumulé de silence par sujet - AD et CN", use_container_width=True)
+     st.image("./assets/images/Distribution_tempscumulé_silences.png", caption="Distribution et Gaussien du temps cumulé de silence par sujet - AD et CN", use_container_width=True)
 st.markdown("""
 Avec toutes ces représentations graphiques, on constate un décalage entre
 les sujets AD et CN. Cela nous prouve donc que nous avons des données ex-
@@ -200,15 +200,15 @@ segmentation n’était pas nécéssaire pour les embeddings de BERT.
 with st.expander("**Transcription Encadrant**", expanded=False):
     col1, col2 = st.columns(2)
     with col1:
-        st.image("./plot/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
+        st.image("./plots/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
     with col2:
-        st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
+        st.image("./plots/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
 with st.expander("**Transcription Silences**", expanded=False):
     col1, col2 = st.columns(2)
     with col1:
-        st.image("./plot/bert_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions incluant les silences [Early Stopping : epoch 7]", use_container_width=True)
+        st.image("./plots/bert_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions incluant les silences [Early Stopping : epoch 7]", use_container_width=True)
     with col2:
-        st.image("./plot/1st_embedding_SBERT_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions incluant les silences (1st) [Early stopping : epoch 476]", use_container_width=True)
+        st.image("./plots/1st_embedding_SBERT_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions incluant les silences (1st) [Early stopping : epoch 476]", use_container_width=True)
 st.markdown("""
 En comparant ces quatres modèles on peut constater que l’apprentissage
 semble légèrement mieux se passer avec les transcriptions de notre encadrant.
@@ -224,7 +224,7 @@ modèles restent faibles.
 """)
 
 # Charger les données depuis le fichier Excel
-df_perf_model = pd.read_excel("entire_model_info.xlsx")
+df_perf_model = pd.read_excel("./data/entire_model_info.xlsx")
 
 model_selected = [
     "BERT.pth",
@@ -247,13 +247,13 @@ est donc plus approprié pour le clustering de textes. Pour le confirmer nous al
 comparer les performances de plusieurs modèles :
 """)
 with st.expander("**BERT**", expanded=False):
-    st.image("./plot/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
+    st.image("./plots/Bert_encadrant_plot.png", caption="Modele de classification binaire BERT utilisant les transcriptions de notre encadrant [Early Stopping : epoch 8]", use_container_width=True)
 with st.expander("**SBERT (1st & 2nd)**", expanded=False):
         col1, col2 = st.columns(2)
         with col1:
-            st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
+            st.image("./plots/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
         with col2:
-            st.image("./plot/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping : epoch 2024]", use_container_width=True)
+            st.image("./plots/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping : epoch 2024]", use_container_width=True)
 st.markdown("""
 A travers les performances de ces trois modèles, on remarque une tendance
 à l’overfitting chez BERT, et les indicateurs de performance sont globalement
@@ -292,7 +292,7 @@ Pour l’approche ”1st embedding”, nous avons considéré chaque morceau
 de texte comme un nouvel individu. Cela a permis une augmentation de donnée,
 passant de 166 individus à 223 d’entrainement et de 71 à 101 de test.
 """)  
-    st.image("./plot/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
+    st.image("./plots/1st_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (1st) [Early stopping : epoch 388]", use_container_width=True)
 
 with st.expander("**2nd Embedding**", expanded=False):
     st.markdown("""
@@ -303,7 +303,7 @@ approche atténue le bruit en équilibrant les variations individuelles et perme
 préserver les caractéristiques du texte. Cependant, le sens deviens plus global et
 perd de sa précision.
 """)
-    st.image("./plot/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping : epoch 2024]", use_container_width=True)
+    st.image("./plots/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping : epoch 2024]", use_container_width=True)
 
 st.markdown("""
 Il est difficile de trancher entre les deux approches. Les paramètres de
@@ -343,11 +343,11 @@ est approprié, nous allons comparer nos modèles en modifiant l’indicateur de
 formance utilisé pour l’early stopping.
 """) 
 with st.expander("**Accuracy (2nd)**", expanded=False):
-    st.image("./plot/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping (Accuracy): epoch 2024]", use_container_width=True)
+    st.image("./plots/2nd_embedding_SBERT_encadrant_plot.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping (Accuracy): epoch 2024]", use_container_width=True)
 with st.expander("**Loss (2nd)**", expanded=False):
-    st.image("./plot/2nd_embedding_SBERT_encadrant_loss.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping (Loss) : epoch 3040]", use_container_width=True)
+    st.image("./plots/2nd_embedding_SBERT_encadrant_loss.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping (Loss) : epoch 3040]", use_container_width=True)
 with st.expander("**F1-score (2nd)**", expanded=False):
-    st.image("./plot/2nd_embedding_SBERT_encadrant_f1-score.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping (F1-score) : epoch 869]", use_container_width=True)
+    st.image("./plots/2nd_embedding_SBERT_encadrant_f1-score.png", caption="Modele de classification binaire SBERT utilisant les transcriptions de notre encadrant (2nd) [Early stopping (F1-score) : epoch 869]", use_container_width=True)
 
 st.markdown("""
 Tous les modèles partent initialement du même réseau de neurones. Cepen-
@@ -380,10 +380,10 @@ tion. Nous avons également un autre jeu de données à analyser, celui concerna
 nos silences. Avant d’évaluer la performance des modèles, nous allons examiner
 la corrélation entre nos variables et nos étiquettes.
 """)
-st.image("./plot/Correlation_matrix.png", caption="Matrice de corrélation entre les variables de silence et notre label.", use_container_width=True)
+st.image("./plots/Correlation_matrix.png", caption="Matrice de corrélation entre les variables de silence et notre label.", use_container_width=True)
 st.markdown("Nous pouvons observer que les données sont pertinentes, mais elles ne sont pas nécessairement significatives pour la prise de décision.")
-st.image("./plot/Binary_Classifier_model_Silences_plot.png", caption="Modele de classification binaire basé sur les Silences [Early stopping (accuracy) : epoch 171]", use_container_width=True)
-st.image("./plot/Shap_summary_plot_binary_classifier.png", caption="Shap summary plot de l'impact des variables sur la sortie du modèle de classification bianire", use_container_width=True)
+st.image("./plots/Binary_Classifier_model_Silences_plot.png", caption="Modele de classification binaire basé sur les Silences [Early stopping (accuracy) : epoch 171]", use_container_width=True)
+st.image("./plots/Shap_summary_plot_binary_classifier.png", caption="Shap summary plot de l'impact des variables sur la sortie du modèle de classification bianire", use_container_width=True)
 
 st.markdown("""
 Nous observons que les performances de ces modèles ne sont pas à la hau-
@@ -429,7 +429,7 @@ st.markdown("**Performances des modèles de régression linéaire**")
 st.dataframe(filtered_df)
 
 # Charger les données depuis le fichier CSV
-df_metrics = pd.read_csv("./linear_regression_metamodel_metrics.csv")
+df_metrics = pd.read_csv("./data/linear_regression_metamodel_metrics.csv")
 
 # Séparer les données pour Train et Test
 train_data = df_metrics[df_metrics['Dataset'] == 'Train'].drop('Dataset', axis=1)
@@ -453,7 +453,7 @@ st.markdown("""
 """)
 
 # Charger le fichier Excel
-df_test = pd.read_excel("stacking_test.xlsx")
+df_test = pd.read_excel("./data/stacking_test.xlsx")
 
 # Créer une select box pour choisir un patient
 patient_id = st.selectbox("Choisissez un patient", options=df_test['id'].unique())
@@ -504,7 +504,7 @@ def segment_text(text):
 to_drop = ['id','Transcription','Silences','Alzheimer', 'transcript', 'addressfname']
 x1 =df_test.loc[df_test['id'] == patient_id].drop(to_drop,axis=1)
 y= df_test.loc[df_test['id'] == patient_id]['Alzheimer']
-scaler_loaded = joblib.load('stacked_scaler.pkl')
+scaler_loaded = joblib.load('./models/stacked_scaler.pkl')
 X1 = scaler_loaded.transform(x1)
 transcript =df_test.loc[df_test['id'] == patient_id]['transcript'].values[0]
 chunks = segment_text(transcript)
@@ -552,12 +552,12 @@ class ImprovedRegressionModel2(nn.Module):
 
 input_dim1 = 5
 model1 = ImprovedRegressionModel1(input_dim1)
-model1.load_state_dict(torch.load('./Linear_Regression_model_Silences.pth', map_location=torch.device('cpu')))
+model1.load_state_dict(torch.load('./models/Linear_Regression_model_Silences.pth', map_location=torch.device('cpu')))
 model1.eval()
 
 input_dim2 = 384
 model2 = ImprovedRegressionModel2(input_dim2)
-model2.load_state_dict(torch.load('./2nd_embedding_linear_regression_SBERT_encadrant_loss.pth', map_location=torch.device('cpu')))
+model2.load_state_dict(torch.load('./models/2nd_embedding_linear_regression_SBERT_encadrant_loss.pth', map_location=torch.device('cpu')))
 model2.eval()
 
 with torch.no_grad():
@@ -597,7 +597,7 @@ with st.expander("**Modèles et prédictions**", expanded=False):
         st.progress(pred2_clamped.item())
      
 # Load the meta-model
-loaded_meta_model = joblib.load('meta_model.pkl')
+loaded_meta_model = joblib.load('./models/meta_model.pkl')
 
 meta_feature = np.column_stack((pred1.cpu().numpy(), pred2.cpu().numpy()))
 meta_prediction = loaded_meta_model.predict(meta_feature)
